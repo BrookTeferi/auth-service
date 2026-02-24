@@ -47,7 +47,6 @@ jobs:
 
       - name: Security scan
         run: |
-          poetry run pip install safety
           poetry run safety check
 
   deploy:
