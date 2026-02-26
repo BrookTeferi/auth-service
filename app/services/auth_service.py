@@ -1,10 +1,12 @@
-from datetime import datetime, timedelta
-from app.repositories.user_repo import UserRepository
-from app.repositories.token_repo import TokenRepository
-from app.security.password import hash_password, verify_password
-from app.security.jwt import create_access_token
-from app.utils.token_utils import generate_refresh_token, hash_refresh_token
 import os
+from datetime import datetime, timedelta
+
+from app.repositories.token_repo import TokenRepository
+from app.repositories.user_repo import UserRepository
+from app.security.jwt import create_access_token
+from app.security.password import hash_password, verify_password
+from app.utils.token_utils import generate_refresh_token, hash_refresh_token
+
 
 class AuthService:
     def __init__(self, user_repo: UserRepository, token_repo: TokenRepository):
@@ -25,12 +27,14 @@ class AuthService:
         raw_refresh_token = generate_refresh_token()
         hashed_token = hash_refresh_token(raw_refresh_token)
         expires_at = datetime.utcnow() + timedelta(days=self.refresh_token_days)
-        self.token_repo.create_refresh_token(user_id=str(user.id), token_hash=hashed_token, expires_at=expires_at)
+        self.token_repo.create_refresh_token(
+            user_id=str(user.id), token_hash=hashed_token, expires_at=expires_at
+        )
 
         return {
             "access_token": access_token,
             "refresh_token": raw_refresh_token,
-            "user_id": str(user.id)
+            "user_id": str(user.id),
         }
 
     def refresh(self, raw_refresh_token: str):
@@ -48,12 +52,11 @@ class AuthService:
         new_raw_refresh_token = generate_refresh_token()
         new_hashed = hash_refresh_token(new_raw_refresh_token)
         expires_at = datetime.utcnow() + timedelta(days=self.refresh_token_days)
-        self.token_repo.create_refresh_token(user_id=str(user.id), token_hash=new_hashed, expires_at=expires_at)
+        self.token_repo.create_refresh_token(
+            user_id=str(user.id), token_hash=new_hashed, expires_at=expires_at
+        )
 
-        return {
-            "access_token": access_token,
-            "refresh_token": new_raw_refresh_token
-        }
+        return {"access_token": access_token, "refresh_token": new_raw_refresh_token}
 
     def logout(self, raw_refresh_token: str):
         hashed_token = hash_refresh_token(raw_refresh_token)

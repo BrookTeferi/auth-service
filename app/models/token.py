@@ -1,10 +1,12 @@
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.ext.declarative import declarative_base
 import uuid
 from datetime import datetime
 
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.declarative import declarative_base
+
 Base = declarative_base()
+
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
