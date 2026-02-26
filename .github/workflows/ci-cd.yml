@@ -49,9 +49,16 @@ jobs:
 
       - name: Lint
         run: |
-          poetry run black --check app tests
-          poetry run isort --check-only app tests
+          poetry run black --check app
+          poetry run isort --check-only app
           poetry run mypy app
+
+          if [ -d "tests" ]; then
+            poetry run black --check tests
+            poetry run isort --check-only tests
+          else
+            echo "No tests directory — skipping test lint"
+          fi
 
       - name: Security scan
         run: poetry run safety check
