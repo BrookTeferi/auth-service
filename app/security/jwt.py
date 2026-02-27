@@ -15,7 +15,9 @@ PRIVATE_KEY: Final[str] = PRIVATE_KEY_FILE.read_text(encoding="utf-8")
 ALGORITHM: Final[str] = os.getenv("JWT_ALGORITHM", "RS256")
 
 
-def create_access_token(subject: str, roles: list[str], expires_minutes: int = 15) -> str:
+def create_access_token(
+    subject: str, roles: list[str], expires_minutes: int = 15
+) -> str:
     expire = datetime.utcnow() + timedelta(minutes=expires_minutes)
     payload = {"sub": subject, "roles": roles, "exp": expire}
     return jwt.encode(payload, PRIVATE_KEY, algorithm=ALGORITHM)
