@@ -20,7 +20,7 @@ class AuthService:
 
     def login(self, email: str, password: str):
         user = self.user_repo.get_by_email(email)
-        if not user or not verify_password(password, user.password_hash):
+        if user is None or not verify_password(password, user.password_hash):
             raise Exception("Invalid credentials")
 
         access_token = create_access_token(subject=str(user.id), roles=["user"])
@@ -48,6 +48,9 @@ class AuthService:
 
         # Issue new tokens
         user = self.user_repo.get_by_id(token.user_id)
+        if user is None:
+            raise Exception("User not found")
+
         access_token = create_access_token(subject=str(user.id), roles=["user"])
         new_raw_refresh_token = generate_refresh_token()
         new_hashed = hash_refresh_token(new_raw_refresh_token)
